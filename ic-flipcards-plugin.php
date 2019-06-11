@@ -6,7 +6,7 @@
  * Author:          INCUCA
  * Author URI:      https://incuca.net
  * Text Domain:     ic-enfold-flipcard
- * Version:         0.1.1
+ * Version:         0.2.0
  *
  * @package         Ic_Enfold
  */
