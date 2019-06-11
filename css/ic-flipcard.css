@@ -1,0 +1,20 @@
+.flipcards-container .flipcard h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flipcards-container .flipcard .flipbox {
+    overflow: hidden;
+}
+
+.flipcards-container .flipcard.flipcard--fixed .flipbox-face-front,
+.flipcards-container .flipcard.flipcard--fixed .flipbox-face-front .flipcard-front,
+.flipcards-container .flipcard.flipcard--fixed .flipbox-face-back,
+.flipcards-container .flipcard.flipcard--fixed .flipbox-face-back .flipcard-back {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}

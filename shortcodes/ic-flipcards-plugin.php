@@ -134,6 +134,28 @@ if ( !class_exists( 'ec_flipcards' ) )
 				),
 
 				array(
+					"name" 	=> __("Fixed height", "avia_framework" ),
+					"desc" 	=> __("Set if every card should have a fixed height", "avia_framework" ),
+					"id" 	=> "fixed_height",
+					"type" 	=> "select",
+					"std" 	=> "",
+					"subtype" => array(
+						__("No", "avia_framework" ) => "no",
+						__("Yes", "avia_framework" ) => "yes"),
+				),
+
+				array(
+					"name" 	=> __("Fixed height value", "avia_framework" ),
+					"desc" 	=> __("Select a height value", "avia_framework" ),
+					"id" 	=> "fixed_height_value",
+					"type" 	=> "input",
+					"std" 	=> "400px",
+					"container_class" => "av_half av_half_first",
+					"required" => array("fixed_height","equals","yes")
+				),
+
+
+				array(
 					"name" => __("Columns", "avia_framework"),
 					"desc" => __("How many Card columns should be displayed?", "avia_framework" ),
 					"id" => "columns",
@@ -262,6 +284,8 @@ if ( !class_exists( 'ec_flipcards' ) )
 		{
 			$atts = shortcode_atts(array(
 				'content'=> ShortcodeHelper::shortcode2array($content),
+				'fixed_height' => 'no',
+				'fixed_height_value' => '400px',
 				'front_font_color' => '',
 				'front_font_custom_color' => '',
 				'front_link' => '',
@@ -283,6 +307,29 @@ if ( !class_exists( 'ec_flipcards' ) )
 
 			extract($atts);
 			$custom_class = $custom_class?" $custom_class":"";
+
+			$flipbox_style = array();
+			if ($fixed_height == 'yes') {
+				$flipbox_style[] = array('height', $fixed_height_value);
+				$is_fixed = ' flipcard--fixed';
+			}
+			$flipbox_style = $this->getStyleString($flipbox_style);
+
+			$front_style = array();
+			if (!empty($front_font_color)) {
+				$front_style[] = array('color', $back_font_custom_color);
+			}
+			$front_style = $this->getStyleString($front_style);
+
+			$back_style = array();
+			if (!empty($back_font_color)) {
+				$back_style[] = array('color', $back_font_custom_color);
+			}
+			if (!empty($back_bg_color)) {
+				$back_style[] = array('background-color', $back_bg_custom_color);
+			}
+			$back_style = $this->getStyleString($back_style);
+
 
 			if(!isset($GLOBALS['flipcard-count'])) {
 				$GLOBALS['flipcard-count'] = 0;
@@ -352,9 +399,9 @@ if ( !class_exists( 'ec_flipcards' ) )
 					}
 
 					?>
-					<div class="flipcard flex_column <?php echo $grid . $first; ?>">
-						<ic-flipbox ref="box<?php echo $grid; ?>">
-							<div slot="front-content" class="flipcard-front">
+					<div class="flipcard flex_column <?php echo $grid . $first . $is_fixed; ?>">
+						<ic-flipbox ref="box<?php echo $grid; ?>"<?php echo $flipbox_style; ?>>
+							<div slot="front-content" class="flipcard-front"<?php echo $front_style; ?>>
 								<h3 class="flipcard-title"><?php echo $title; ?></h3>
 								<div class="flipcard-content">
 									<?php echo ShortcodeHelper::avia_apply_autop(ShortcodeHelper::avia_remove_autop($front_content)); ?>
@@ -363,7 +410,7 @@ if ( !class_exists( 'ec_flipcards' ) )
 									<?php echo $front_button_html; ?>
 								</div>
 							</div>
-							<div slot="back-content" class="flipcard-back">
+							<div slot="back-content" class="flipcard-back"<?php echo $back_style; ?>>
 								<h3 class="flipcard-title"><?php echo $back_title; ?></h3>
 								<div class="flipcard-content">
 									<?php echo ShortcodeHelper::avia_apply_autop(ShortcodeHelper::avia_remove_autop($back_content)); ?>
@@ -380,6 +427,23 @@ if ( !class_exists( 'ec_flipcards' ) )
 			$output = ob_get_contents();
 			ob_end_clean();
 			return $output;
+		}
+
+		function extra_assets()
+		{
+			$plugin_dir = plugin_dir_url(__FILE__);
+			wp_enqueue_style( 'ic-flipcard' , $plugin_dir.'../css/ic-flipcard.css' , array(), false );
+		}
+
+		function getStyleString($style) {
+			if(sizeof($style) > 0) {
+				$mapper = function ($style) {
+					return implode(': ', $style);
+				};
+				$str = implode('; ', array_map($mapper, $style));
+				return "style=\"" . $str . "\"";
+			}
+			return "";
 		}
 	}
 }
