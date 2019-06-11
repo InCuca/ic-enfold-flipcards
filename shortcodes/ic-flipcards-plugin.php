@@ -293,7 +293,7 @@ if ( !class_exists( 'ec_flipcards' ) )
 
 			// Enqueue VueJS
 			wp_enqueue_script('vuejs', 'https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.4/vue.min.js', array(), '2.4.4');
-			echo plugin_dir_url(__FILE__);
+			
 			// Enqueue ic-flipbox component
 			wp_enqueue_script('ic-flipbox', plugin_dir_url(__FILE__).'../js/ic-flipbox.min.js', array('vuejs'), '0.0.1', true);
 			wp_enqueue_style('ic-flipbox', plugin_dir_url(__FILE__) . '../css/ic-flipbox.min.css');
